@@ -1,0 +1,86 @@
+package com.rest.webapp.controller;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.strabag.app.controller.ParseFileController;
+import com.strabag.app.controller.response.ResultResponse;
+import com.strabag.app.entity.SectionAndClass;
+import com.strabag.app.repository.SectionAndClassRepository;
+
+@Component
+@RestController
+@RequestMapping(value = "/parse")
+public class ParsingWebappController {
+
+	private static final Logger logger = LogManager.getLogger(ParsingWebappController.class);
+
+	@Autowired
+	ParseFileController parseFileController;
+
+	ResultResponse resultResponse = new ResultResponse();
+
+	@Autowired
+	SectionAndClassRepository sectionAndClassRepository;
+
+	@GetMapping("/register-job")
+	public ResultResponse parseFile() {
+
+		try {
+			logger.info("STARTED REGISTERING CSV AND EXCEL FILE FROM Location: ");
+			resultResponse = parseFileController.parseFile("F:\\Java\\JavaSpringSuite\\RestAPI");
+			logger.info("Completed Parsing all csv and excel files");
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return resultResponse;
+
+	}
+
+	@GetMapping("/findbyNameAndCode")
+	public List<SectionAndClass> getjobID(@RequestParam String className, @RequestParam String classCode) {
+		List<SectionAndClass> sectionAndClass = new ArrayList<SectionAndClass>();
+
+		sectionAndClass = sectionAndClassRepository.findAll();
+
+		return sectionAndClass;
+
+	}
+	
+	@GetMapping("/findbyJobId")
+	public List<SectionAndClass> getByJobID(@RequestParam int jobID) {
+		List<SectionAndClass> sectionAndClass = new ArrayList<SectionAndClass>();
+
+		sectionAndClass = sectionAndClassRepository.findbyJobId(jobID);
+
+		return sectionAndClass;
+
+	}
+	
+	@GetMapping("/createChart")
+	public List<SectionAndClass> createChart() {
+		List<SectionAndClass> sectionAndClass = new ArrayList<SectionAndClass>();
+
+		sectionAndClass = sectionAndClassRepository.findbyJobId(jobID);
+
+		return sectionAndClass;
+
+	}
+
+}

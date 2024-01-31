@@ -1,0 +1,15 @@
+1706659581090	Rename package 'com.strabag.test.CaseStudy'
+1706659601527	Rename package 'com.strabag.test.CaseStudy.controller'
+1706659692636	Delete element
+1706668071552	Encapsulate field 'className'
+1706668080161	Encapsulate field 'classCode'
+1706669717055	Rename type 'Section'
+1706672183436	Delete element
+1706672188270	Delete element
+1706692604540	Rename resource 'CSVTestFile.csv'
+1706692620174	Delete element
+1706692634663	Rename resource 'ExcelTestFile.xlsx.tmp'
+1706693227245	Rename method 'isFilexist'
+1706694710975	Rename resource 'CSVTestFile.xslx'
+1706697762564	Delete element
+1706704658819	Move file

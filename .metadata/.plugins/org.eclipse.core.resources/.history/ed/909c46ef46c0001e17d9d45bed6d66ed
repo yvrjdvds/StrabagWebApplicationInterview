@@ -1,0 +1,105 @@
+package com.strabag.app.service;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.FileNameMap;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.strabag.app.entity.JobDetails;
+import com.strabag.app.entity.SectionAndClass;
+import com.strabag.app.entity.JobDetails.Status;
+import com.strabag.app.repository.JobDetailsRepository;
+import com.strabag.app.repository.SectionAndClassRepository;
+
+public class FileParseService {
+	
+	Logger logger = LogManager.getLogger(FileParseService.class);
+
+	@Autowired
+	private JobDetailsRepository jobDetailsRepository;
+
+	@Autowired
+	private SectionAndClassRepository sectionAndClassRepository;
+
+	public List<String> isFileValid(String fileDirectory) {
+		File filecheck = new File(fileDirectory);
+		File filesList[] = filecheck.listFiles();
+		List<String> validFilesList = new ArrayList<String>();
+		for (File file : filesList) {
+			FileNameMap fileNameMap = URLConnection.getFileNameMap();
+			String mimeType = fileNameMap.getContentTypeFor(file.getName());
+			String csvType = "text/csv";
+			if (csvType.equals(mimeType)) {
+				validFilesList.add(file.getPath());
+			} else if (file.getName().toString().endsWith(".xslx")) {
+				validFilesList.add(file.getPath());
+			}
+		}
+
+		return validFilesList;
+	}
+
+	public JobDetails createJobID(String validfile) {
+		JobDetails jobDetails = new JobDetails();
+		jobDetails.setFileName(validfile);
+		jobDetails.setJobStatus(Status.START);
+		jobDetails.setJobStartDate(new Date());
+
+		jobDetailsRepository.save(jobDetails);
+		return jobDetails;
+	}
+
+	private List<SectionAndClass> parseCsvToEntity(String file, JobDetails jobDetails)
+			throws FileNotFoundException, IOException {
+		String line = null;
+		String csvSplitBy = "\\|";
+		List<SectionAndClass> sectionAndClassesList = new ArrayList<SectionAndClass>();
+		;
+		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+			while ((line = br.readLine()) != null) {
+
+				String[] data = line.split(csvSplitBy);
+
+				SectionAndClass sectionAndClass = new SectionAndClass();
+				sectionAndClass.setJobID(jobDetails.getJobID());
+				sectionAndClass.setSectionName(data[0]);
+				sectionAndClass.setClassName(data[1]);
+				sectionAndClass.setClassCode(data[2]);
+				sectionAndClassesList.add(sectionAndClass);
+
+				for (int i = 3; i < data.length; i += 2) {
+					sectionAndClass.setJobID(jobDetails.getJobID());
+					sectionAndClass.setSectionName(data[0]);
+					sectionAndClass.setClassName(data[i]);
+					sectionAndClass.setClassCode(data[i + 1]);
+					sectionAndClassesList.add(sectionAndClass);
+
+				}
+			}
+			logger.debug("CSV file Parsing completed");
+
+		}
+		return sectionAndClassesList;
+	}
+
+	public void parseAndSave(String validfile, JobDetails jobDetails) throws FileNotFoundException, IOException {
+
+		List<SectionAndClass> sectionAndClass = parseCsvToEntity(validfile, jobDetails);
+		sectionAndClassRepository.saveAll(sectionAndClass);
+		jobDetails.setJobStatus(Status.COMPLETED);
+		jobDetails.setJobCompletedDate(new Date());
+		jobDetailsRepository.save(jobDetails);
+
+	}
+
+}

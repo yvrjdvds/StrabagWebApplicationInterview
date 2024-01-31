@@ -1,0 +1,14 @@
+package com.strabag.webapp.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+
+public class ParseFileController {
+
+	@GetMapping("/register-job")
+	public void parseFile() {
+		
+		
+		
+	}
+
+}

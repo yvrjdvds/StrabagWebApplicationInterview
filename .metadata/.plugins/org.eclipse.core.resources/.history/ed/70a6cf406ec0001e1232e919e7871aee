@@ -1,0 +1,32 @@
+/* /// // *
+//// * package com.strabag.webapp.controller;
+//// * 
+//// * import java.io.FileNotFoundException; import java.io.IOException;
+//// * 
+//// * import org.springframework.beans.factory.annotation.Autowired; import
+//// * org.springframework.beans.factory.annotation.Value; import
+//// * org.springframework.web.bind.annotation.GetMapping; import
+//// * org.springframework.web.bind.annotation.RestController;
+//// * 
+//// * import com.strabag.app.controller.ParseFileController; import
+//// * com.strabag.app.controller.response.ResultResponse;
+//// * 
+//// * @RestController public class ParseFileAPIController {
+//// * 
+//// * @Autowired ParseFileController ParseFileController;
+//// * 
+//// * 
+//// * @Value("${file.path}") private String fileDirectory;
+//// * 
+//// * @GetMapping("/register-job") public ResultResponse parseFile() throws
+//// * FileNotFoundException, IOException { ResultResponse parseResponse = new
+//// * ResultResponse();
+//// * 
+//// * parseResponse = ParseFileController.parseFile(fileDirectory);
+//// * 
+//// * return parseResponse;
+//// * 
+//// * }
+//// * 
+//// * }
+//// *//*/*/

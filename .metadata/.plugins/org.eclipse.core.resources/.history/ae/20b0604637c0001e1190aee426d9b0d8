@@ -1,0 +1,5 @@
+package com.strabag.webapp.controller.request;
+
+public class ApiRequest {
+
+}

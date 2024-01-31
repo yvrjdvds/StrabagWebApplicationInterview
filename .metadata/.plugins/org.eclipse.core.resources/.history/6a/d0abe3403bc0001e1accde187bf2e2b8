@@ -1,0 +1,24 @@
+package com.strabag.webapp.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import com.strabag.app.controller.ParseFileController;
+
+public class ParseFileAPIController {
+
+	@Autowired
+	ParseFileController ParseFileController;
+	
+	@Value("${file.path}")
+
+	@GetMapping("/register-job")
+	public Object parseFile() {
+
+		ParseFileController.parseFile(null)
+		
+		return null;
+
+	}
+
+}
